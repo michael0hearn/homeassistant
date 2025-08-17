@@ -1,0 +1,52 @@
+version: '3.3'
+
+services:
+  homeassistant:
+    # Option 1: Use pre-built image (recommended)
+    image: michaelhearn006/homeassistant:1.5.0
+
+    # Option 2: Build from local Dockerfile (uncomment if needed)
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+
+    container_name: homeassistant
+    restart: unless-stopped
+    environment:
+      - TZ=Australia/Perth  # Change to your timezone
+    volumes:
+      # Main config directory
+      - /docker/homeassistant:/config
+      # Local time (for proper timestamps)
+      - /etc/localtime:/etc/localtime:ro
+      # Optional: USB device access (for Zigbee/Z-Wave)
+      # - /dev/ttyUSB0:/dev/ttyUSB0
+      # - /dev/ttyACM0:/dev/ttyACM0
+    ports:
+      - "8123:8123"
+
+    # Network mode for device discovery
+    network_mode: host
+
+    # Alternative: use bridge network with specific ports
+    # networks:
+    #   - homeassistant
+
+    # Device access (uncomment if needed for USB devices)
+    # devices:
+    #   - /dev/ttyUSB0:/dev/ttyUSB0
+    #   - /dev/ttyACM0:/dev/ttyACM0
+
+    # Privileged mode (only if required for hardware access)
+    # privileged: true
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# Network definition (if not using host networking)
+# networks:
+#   homeassistant:
+#     driver: bridge
