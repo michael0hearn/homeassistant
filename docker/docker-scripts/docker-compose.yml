@@ -15,38 +15,42 @@ services:
     environment:
       - TZ=Australia/Perth  # Change to your timezone
     volumes:
-      # Main config directory
+      # Main config directory - this maps host /docker/homeassistant to container /config
       - /docker/homeassistant:/config
-      # Local time (for proper timestamps)
+      # Local time for proper timestamps
       - /etc/localtime:/etc/localtime:ro
-      # Optional: USB device access (for Zigbee/Z-Wave)
+      # Optional: USB device access (uncomment if needed for Zigbee/Z-Wave)
       # - /dev/ttyUSB0:/dev/ttyUSB0
       # - /dev/ttyACM0:/dev/ttyACM0
+    
     ports:
       - "8123:8123"
-
-    # Network mode for device discovery
+    
+    # Use host network for device discovery (recommended for HA)
     network_mode: host
-
-    # Alternative: use bridge network with specific ports
-    # networks:
-    #   - homeassistant
-
-    # Device access (uncomment if needed for USB devices)
+    
+    # Optional: Add privileged mode if you need access to hardware
+    # privileged: true
+    
+    # Optional: Add device access
     # devices:
     #   - /dev/ttyUSB0:/dev/ttyUSB0
     #   - /dev/ttyACM0:/dev/ttyACM0
-
-    # Privileged mode (only if required for hardware access)
-    # privileged: true
-
+    
+    # Optional: Add capabilities
+    # cap_add:
+    #   - NET_ADMIN
+    #   - NET_RAW
+    
+    # Health check override (optional)
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8123"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 60s
 
-# Network definition (if not using host networking)
+# Optional: Define custom network if not using host mode
 # networks:
 #   homeassistant:
 #     driver: bridge
