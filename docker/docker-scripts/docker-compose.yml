@@ -3,7 +3,7 @@ version: '3.3'
 services:
   homeassistant:
     # Option 1: Use pre-built image (recommended)
-    image: michaelhearn006/homeassistant:1.5.0
+    image: michaelhearn006/homeassistant:2.0.0
 
     # Option 2: Build from local Dockerfile (uncomment if needed)
     # build:
